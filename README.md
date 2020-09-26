@@ -71,7 +71,7 @@ Example Playbook
 License
 -------
 
-LGPLv3
+BSD 3-Clause
 
 Author Information
 ------------------
