@@ -1,13 +1,13 @@
 - name: Create local dir to store SSH keys
   file:
-    path: "{{ssh_keys_path}}"
+    path: "{{ ssh_keys_path }}"
     state: directory
     mode: 0700
   delegate_to: localhost
 
 - name: Generate RedELK user SSH keys
   community.crypto.openssh_keypair:
-    path: "{{ssh_keys_path}}/{{redelk_user}}_id_rsa"
+    path: "{{ ssh_keys_path }}/{{ redelk_user }}_id_rsa"
     type: rsa
     size: 4096
     comment: "RedELK user"
@@ -17,15 +17,15 @@
 - name: Adding redelk user
   become: yes
   user:
-    name: "{{redelk_user}}"
-    home: "{{optsec_dir}}/{{redelk_user}}"
+    name: "{{ redelk_user }}"
+    home: "{{ optsec_dir }}/{{ redelk_user }}"
 
 - name: Creating .ssh dir for redelk and setting permissions
   become: yes
   file:
-    path: "{{optsec_dir}}/{{redelk_user}}/.ssh"
-    owner: "{{redelk_user}}"
-    group: "{{redelk_user}}"
+    path: "{{ optsec_dir }}/{{ redelk_user }}/.ssh"
+    owner: "{{ redelk_user }}"
+    group: "{{ redelk_user }}"
     state: directory
     mode: 0700
   register: createsshdir
@@ -33,19 +33,19 @@
 - name: Copying ssh private key to remote hosts
   become: yes
   copy:
-    src: "{{ssh_keys_path}}/{{redelk_user}}_id_rsa"
-    dest: "{{optsec_dir}}/{{redelk_user}}/.ssh/id_rsa"
-    owner: "{{redelk_user}}"
-    group: "{{redelk_user}}"
+    src: "{{ ssh_keys_path }}/{{ redelk_user }}_id_rsa"
+    dest: "{{ optsec_dir }}/{{ redelk_user }}/.ssh/id_rsa"
+    owner: "{{ redelk_user }}"
+    group: "{{ redelk_user }}"
     mode: 0600
   # when: redelkusrsshkey.changed or createsshdir.changed
 
 - name: Copying ssh public key to remote hosts
   become: yes
   copy:
-    src: "{{ssh_keys_path}}/{{redelk_user}}_id_rsa.pub"
-    dest: "{{optsec_dir}}/{{redelk_user}}/.ssh/id_rsa.pub"
-    owner: "{{redelk_user}}"
-    group: "{{redelk_user}}"
+    src: "{{ ssh_keys_path }}/{{ redelk_user }}_id_rsa.pub"
+    dest: "{{ optsec_dir }}/{{ redelk_user }}/.ssh/id_rsa.pub"
+    owner: "{{ redelk_user }}"
+    group: "{{ redelk_user }}"
     mode: 0600
   # when: redelkusrsshkey.changed or createsshdir.changed

@@ -2,7 +2,7 @@ server {
     listen 80;
 
     server_name 127.0.0.1;
-    root {{optsec_dir}}/html;
+    root {{ optsec_dir }}/html;
     index index.html index.htm;
     autoindex on;
 
@@ -17,7 +17,7 @@ server {
     # REDELK
     location / {
         auth_basic "Restricted Access";
-        auth_basic_user_file {{optsec_dir}}/htpasswd.users;
+        auth_basic_user_file {{ optsec_dir }}/htpasswd.users;
         proxy_pass https://localhost:5601;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
@@ -28,7 +28,7 @@ server {
 
     location /c2logs {
         auth_basic "Restricted Access";
-        auth_basic_user_file {{optsec_dir}}/htpasswd.users;
+        auth_basic_user_file {{ optsec_dir }}/htpasswd.users;
         try_files $uri $uri/ =404;
         autoindex on;
         location ~* \.(txt)$ {
@@ -46,12 +46,12 @@ server {
 
     location /attack-navigator {
         auth_basic "Restricted Access";
-        auth_basic_user_file {{optsec_dir}}/htpasswd.users;
+        auth_basic_user_file {{ optsec_dir }}/htpasswd.users;
     }
 
     location /jupyter {
         auth_basic "Restricted Access";
-        auth_basic_user_file {{optsec_dir}}/htpasswd.users;
+        auth_basic_user_file {{ optsec_dir }}/htpasswd.users;
         proxy_pass http://localhost:8888/jupyter;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;

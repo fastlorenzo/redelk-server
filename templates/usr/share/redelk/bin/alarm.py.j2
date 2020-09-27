@@ -16,7 +16,7 @@ import traceback
 import re
 from connectors import msteams, email
 
-es  = Elasticsearch(['https://{{es_redelk_user}}:{{es_redelk_password}}@localhost:9200'])
+es  = Elasticsearch(['https://{{ es_redelk_user }}:{{es_redelk_password}}@localhost:9200'])
 
 from datetime import datetime
 from datetime import timedelta

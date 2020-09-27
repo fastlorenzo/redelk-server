@@ -87,5 +87,5 @@
 
 - name: Not enough memory for full install!
   ansible.builtin.fail:
-    msg: "Not enough memory for full install: {{ansible_memory_mb.real.total}}MB. Use limited install or add memory and try again."
-  when: (should_exit is defined) and (should_exit|bool == True)
+    msg: "Not enough memory for full install: {{ ansible_memory_mb.real.total }}MB. Use limited install or add memory and try again."
+  when: (should_exit is defined) and (should_exit | bool)

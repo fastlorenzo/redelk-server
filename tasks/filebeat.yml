@@ -5,7 +5,7 @@
       - filebeat
     state: present
     update_cache: yes
-  register: filebeat_install
+  notify: setup filebeat dashboards
   tags:
     - packages
     - beats-setup
@@ -15,7 +15,7 @@
   template:
     src: etc/filebeat/filebeat.yml.j2
     dest: /etc/filebeat/filebeat.yml
-  register: filebeatcfg
+  notify: restart filebeat
   tags:
     - config
 
@@ -24,7 +24,7 @@
   copy:
     src: certificates/redelk/redelkCA.crt
     dest: /etc/filebeat/redelkCA.crt
-  register: redelkca
+  notify: restart filebeat
   tags:
     - pki
 
@@ -41,19 +41,5 @@
     - config
     - pki
 
-- name: Setup filebeat dashboard in Kibana
-  become: yes
-  shell: "/usr/bin/filebeat setup --index-management -E output.logstash.enabled=false -E 'output.elasticsearch.hosts=[\"https://localhost:9200\"]' -E 'output.elasticsearch.ssl.certificate_authorities=[\"/etc/filebeat/redelkCA.crt\"]' -E 'setup.ilm.enabled=true' -E 'output.elasticsearch.username=elastic' -E 'output.elasticsearch.password={{es_elastic_password}}' --pipelines --modules system,nginx,mysql,apache,iptables,auditd,elasticsearch,kibana,logstash,haproxy --dashboards"
-  when: filebeat_install.changed
-  tags:
-    - beats-setup
-
-- name: Restarting filebeat and enabling on boot
-  become: yes
-  service:
-    name: filebeat
-    state: restarted
-    enabled: yes
-  when: filebeatcfg.changed or redelkca.changed
-  tags:
-    - service
+- name: Flush handlers
+  meta: flush_handlers

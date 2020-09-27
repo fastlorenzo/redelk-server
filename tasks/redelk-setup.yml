@@ -8,7 +8,7 @@
 - name: Copying RedELK background running scripts (remote logs, thumbnails, enrichment, alarms, etc)
   become: yes
   template:
-    src: "{{item}}"
+    src: "{{ item }}"
     dest: "/usr/share/redelk/bin/{{ item | basename | regex_replace('.j2','') }}"
   with_fileglob:
     - ../templates/usr/share/redelk/bin/*
@@ -30,8 +30,8 @@
   become: yes
   file:
     path: /var/log/redelk
-    owner: "{{redelk_user}}"
-    group: "{{redelk_user}}"
+    owner: "{{ redelk_user }}"
+    group: "{{ redelk_user }}"
     state: directory
     mode: 0770
 
@@ -41,6 +41,6 @@
     path: /usr/share/redelk
     state: directory
     recurse: yes
-    owner: "{{redelk_user}}"
-    group: "{{redelk_user}}"
+    owner: "{{ redelk_user }}"
+    group: "{{ redelk_user }}"
     mode: u=rwX,g=rwX,o=rX

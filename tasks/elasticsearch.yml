@@ -9,26 +9,26 @@
     mode: 0640
   with_fileglob:
     - ../templates/etc/elasticsearch/*
-  register: elasticsearchcfg
+  notify: restart elasticsearch
 
 - name: Copy RedELK certs to /etc/elasticsearch folder
   become: yes
   copy:
-    src: "{{redelk_cert_path}}/{{item}}"
-    dest: "/etc/elasticsearch/{{item}}"
+    src: "{{ redelk_cert_path }}/{{ item }}"
+    dest: "/etc/elasticsearch/{{ item }}"
     owner: root
     group: elasticsearch
     mode: 0640
   with_items:
-    - "{{ansible_hostname}}.crt"
-    - "{{ansible_hostname}}.key"
+    - "{{ ansible_hostname }}.crt"
+    - "{{ ansible_hostname }}.key"
     - redelkCA.crt
-  register: elasticsearchcerts
+  notify: restart elasticsearch
 
 - name: Setting elastic user's password
   become: yes
   shell:
-    cmd: printf "%s" "{{es_elastic_password}}" | /usr/share/elasticsearch/bin/elasticsearch-keystore add -f -x "bootstrap.password"
+    cmd: printf "%s" "{{ es_elastic_password }}" | /usr/share/elasticsearch/bin/elasticsearch-keystore add -f -x "bootstrap.password"
 
 - name: Recursively setting permissions of /etc/elasticsearch folder
   become: yes
@@ -40,20 +40,15 @@
     group: elasticsearch
     mode: u=rwX,g=rX,o=-rwx
 
-- name: Restarting elasticsearch and enabling on boot
-  become: yes
-  service:
-    name: elasticsearch
-    state: restarted
-    enabled: yes
-  when: elasticsearchcfg.changed or elasticsearchcerts.changed
+- name: Flush handlers
+  meta: flush_handlers
 
 - name: Wait for elasticsearch to be ready
   uri:
     url: "https://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=50s"
     status_code: 200
     url_username: elastic
-    url_password: "{{es_elastic_password}}"
+    url_password: "{{ es_elastic_password }}"
     validate_certs: no
     force_basic_auth: yes
   register: elasticsearch_status
@@ -67,27 +62,11 @@
     method: POST
     body_format: json
     body:
-      password: "{{es_kibana_password}}"
+      password: "{{ es_kibana_password }}"
     url_username: elastic
-    url_password: "{{es_elastic_password}}"
+    url_password: "{{ es_elastic_password }}"
     validate_certs: no
     force_basic_auth: yes
-
-- name: Creating client 'redelk-ingest' role
-  uri:
-    url: "https://localhost:5601/api/security/role/redelk_ingest"
-    method: PUT
-    headers:
-      "kbn-xsrf": "true"
-    user: elastic
-    password: "{{es_elastic_password}}"
-    force_basic_auth: yes
-    validate_certs: no
-    body_format: json
-    body: '{"elasticsearch":{"cluster":["monitor","cluster:admin/xpack/monitoring/bulk"],"indices":[{"names":["rtops-*","credentials-*","bluecheck-*","email-*","redirtraffic-*","implantsdb","auditbeat*","filebeat*","packetbeat*","apm*","heartbeat*","nagioscheckbeat*","metricbeat*"],"privileges":["create","read","write","monitor","index","manage","delete"]}],"run_as":[]},"kibana":[]}'
-    status_code:
-      - 200
-      - 204
 
 - name: Adding redelk-ingest elasticsearch user
   uri:
@@ -109,31 +88,31 @@
     method: POST
     body_format: json
     body:
-      password: "{{es_logstash_system_password}}"
+      password: "{{ es_logstash_system_password }}"
     url_username: elastic
-    url_password: "{{es_elastic_password}}"
+    url_password: "{{ es_elastic_password }}"
     validate_certs: no
     force_basic_auth: yes
 
 - name: Adding redelk elasticsearch user
   uri:
-    url: "https://localhost:9200/_security/user/{{es_redelk_user}}"
+    url: "https://localhost:9200/_security/user/{{ es_redelk_user }}"
     method: POST
     body_format: json
     body:
-      password: "{{es_redelk_password}}"
+      password: "{{ es_redelk_password }}"
       roles:
       - superuser
     url_username: elastic
-    url_password: "{{es_elastic_password}}"
+    url_password: "{{ es_elastic_password }}"
     validate_certs: no
     force_basic_auth: yes
 
 - name: Installing RedELK index templates
   uri:
-    url: "https://localhost:9200/_template/{{item}}"
+    url: "https://localhost:9200/_template/{{ item }}"
     url_username: elastic
-    url_password: "{{es_elastic_password}}"
+    url_password: "{{ es_elastic_password }}"
     method: PUT
     body_format: json
     body: "{{ lookup('file','files/templates/redelk_elasticsearch_template_' +item + '.json') }}"
@@ -148,7 +127,7 @@
   uri:
     url: "https://localhost:9200/_ilm/policy/redelk"
     url_username: elastic
-    url_password: "{{es_elastic_password}}"
+    url_password: "{{ es_elastic_password }}"
     method: PUT
     body_format: json
     body: "{{ item }}"

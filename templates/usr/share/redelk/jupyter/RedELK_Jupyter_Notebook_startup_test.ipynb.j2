@@ -37,7 +37,7 @@
     "ssl_context = create_ssl_context()\n",
     "ssl_context.check_hostname = False\n",
     "ssl_context.verify_mode = ssl.CERT_NONE\n",
-    "es = Elasticsearch(hosts=[{'host':'elasticsearch', 'port':9200}], scheme='https', ssl_context=ssl_context, http_auth=('{{es_redelk_user}}', '{{es_redelk_password}}'))"
+    "es = Elasticsearch(hosts=[{'host':'elasticsearch', 'port':9200}], scheme='https', ssl_context=ssl_context, http_auth=('{{ es_redelk_user }}', '{{es_redelk_password}}'))"
    ]
   },
   {

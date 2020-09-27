@@ -2,9 +2,9 @@
 - name: Create Nginx htpasswd file
   become: yes
   htpasswd:
-    path: "{{optsec_dir}}/htpasswd.users"
-    name: "{{es_redelk_user}}"
-    password: "{{es_redelk_password}}"
+    path: "{{ optsec_dir }}/htpasswd.users"
+    name: "{{ es_redelk_user }}"
+    password: "{{ es_redelk_password }}"
     owner: root
     group: www-data
     mode: 0640
@@ -17,13 +17,13 @@
     owner: root
     group: www-data
     mode: 0640
-  register: nginxcfg
+  notify: restart nginx
 
 - name: Creating www dir and setting permissions
   become: yes
   file:
-    path: "{{optsec_dir}}/html"
-    owner: "{{redelk_user}}"
+    path: "{{ optsec_dir }}/html"
+    owner: "{{ redelk_user }}"
     group: www-data
     state: directory
     mode: 0770
@@ -31,8 +31,8 @@
 - name: Creating c2logs dir and setting permissions
   become: yes
   file:
-    path: "{{optsec_dir}}/html/c2logs"
-    owner: "{{redelk_user}}"
+    path: "{{ optsec_dir }}/html/c2logs"
+    owner: "{{ redelk_user }}"
     group: www-data
     state: directory
     mode: 0770
@@ -41,24 +41,19 @@
   become: yes
   synchronize:
     src: attack-navigator
-    dest: "{{optsec_dir}}/html"
+    dest: "{{ optsec_dir }}/html"
     mode: push
     use_ssh_args: yes
 
 - name: Recursively setting permissions of attack-navigator folder
   become: yes
   file:
-    path: "{{optsec_dir}}/html/attack-navigator"
+    path: "{{ optsec_dir }}/html/attack-navigator"
     state: directory
     recurse: yes
     owner: root
     group: www-data
     mode: u=rwX,g=rX,o=-rwx
 
-- name: (Re-)Starting nginx and enabling on boot
-  become: yes
-  service:
-    name: nginx
-    state: restarted
-    enabled: yes
-  when: nginxcfg.changed
+- name: Flush handlers
+  meta: flush_handlers

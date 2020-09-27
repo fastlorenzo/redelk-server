@@ -21,7 +21,7 @@
 - import_tasks: full.yml
   tags:
     - redelk_install_full
-  when: redelk_limited_install|bool == False
+  when: not (redelk_limited_install | bool)
 
 # Generate certificates
 - import_tasks: pki-elastic.yml

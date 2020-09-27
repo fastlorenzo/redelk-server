@@ -9,20 +9,20 @@
     state: present
     update_cache: yes
 
-- name: Adding GPG key of Elastic
+- name: Install Elastic repository
   become: yes
-  apt_key:
-    url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
-    state: present
-  register: elasticaptkey
-
-- name: Adding Elastic APT repository
-  become: yes
-  apt_repository:
-    repo: deb https://artifacts.elastic.co/packages/7.x/apt stable main
-    state: present
-    filename: elastic-7.x
-  when: elasticaptkey.changed
+  block:
+  - name: Adding GPG key of Elastic
+    apt_key:
+      url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+      state: present
+  - name: Adding Elastic APT repository
+    apt_repository:
+      repo: deb https://artifacts.elastic.co/packages/7.x/apt stable main
+      state: present
+      filename: elastic-7.x
+  tags:
+    - packages
 
 - name: Adding openjdk apt repository
   become: yes
@@ -41,9 +41,9 @@
   become: yes
   apt:
     name:
-      - logstash=1:{{es_version}}-1
-      - elasticsearch={{es_version}}
-      - kibana={{es_version}}
+      - logstash=1:{{ es_version }}-1
+      - elasticsearch={{ es_version }}
+      - kibana={{ es_version }}
       - nginx
       - python3-passlib
       - python3-pil
@@ -64,4 +64,4 @@
       - python3-docker
     state: present
     update_cache: yes
-  when: redelk_limited_install|bool == False
+  when: not (redelk_limited_install | bool)

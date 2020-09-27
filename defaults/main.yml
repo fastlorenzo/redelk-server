@@ -1,6 +1,6 @@
 ---
 # es_version | Elastic version
-es_version: "7.9.2"
+es_version: "7.8.1"
 # es_heap_size | ElasticSearch memory size
 es_heap_size: 1g
 # es_elastic_password | ElasticSearch users
