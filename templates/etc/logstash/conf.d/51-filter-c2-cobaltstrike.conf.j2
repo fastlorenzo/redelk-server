@@ -451,8 +451,8 @@ filter {
       #     }
       #     result_size => 1
       #     enable_sort => false
-      #     user => ["logstash"]
-      #     password => ["{{es_logstash_system_password}}"]
+      #     user => ["redelk_ingest"]
+      #     password => ["{{ es_redelk_ingest_password }}"]
       #     ca_file => "/etc/logstash/redelkCA.crt"
       #     tag_on_failure => ["_elasticsearch_lookup_failure_implantsdb"]
       #   }

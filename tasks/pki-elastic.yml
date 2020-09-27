@@ -93,3 +93,18 @@
     mode: pull
     use_ssh_args: yes
   when: redelkcagen.changed or redelkcertsgen.changed
+
+- name: Copy RedELK CA to /usr/local/share/ca-certificates
+  become: yes
+  copy:
+    src: "{{redelk_cert_path}}/redelkCA.crt"
+    dest: "/usr/local/share/ca-certificates/redelkCA.crt"
+    owner: root
+    group: root
+    mode: 0644
+  register: redelkca_certificates
+
+- name: Run update-ca-certificates to trust RedELK CA
+  become: yes
+  command: "update-ca-certificates"
+  when: redelkca_certificates.changed

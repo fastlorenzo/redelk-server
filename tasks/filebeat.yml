@@ -1,0 +1,59 @@
+- name: Install filebeat (apt)
+  become: yes
+  apt:
+    name:
+      - filebeat
+    state: present
+    update_cache: yes
+  register: filebeat_install
+  tags:
+    - packages
+    - beats-setup
+
+- name: Copy filebeat.yml config file to the host
+  become: yes
+  template:
+    src: etc/filebeat/filebeat.yml.j2
+    dest: /etc/filebeat/filebeat.yml
+  register: filebeatcfg
+  tags:
+    - config
+
+- name: Copy RedELK CA file to the hosts
+  become: yes
+  copy:
+    src: certificates/redelk/redelkCA.crt
+    dest: /etc/filebeat/redelkCA.crt
+  register: redelkca
+  tags:
+    - pki
+
+- name: Recursively setting permissions of /etc/filebeat folder
+  become: yes
+  file:
+    path: /etc/filebeat
+    state: directory
+    recurse: yes
+    owner: root
+    group: root
+    mode: u=rwX,g=rX,o=-rwx
+  tags:
+    - config
+    - pki
+
+- name: Setup filebeat dashboard in Kibana
+  become: yes
+  shell: "/usr/bin/filebeat setup --index-management -E output.logstash.enabled=false -E 'output.elasticsearch.hosts=[\"https://localhost:9200\"]' -E 'output.elasticsearch.ssl.certificate_authorities=[\"/etc/filebeat/redelkCA.crt\"]' -E 'setup.ilm.enabled=true' -E 'output.elasticsearch.username=elastic' -E 'output.elasticsearch.password={{es_elastic_password}}' --pipelines --modules system,nginx,mysql,apache,iptables,auditd,elasticsearch,kibana,logstash,haproxy --dashboards"
+  when: filebeat_install.changed
+  tags:
+    - beats-setup
+
+- name: Restarting filebeat and enabling on boot
+  become: yes
+  service:
+    name: filebeat
+    state: restarted
+    enabled: yes
+  when: filebeatcfg.changed or redelkca.changed
+  tags:
+    - service

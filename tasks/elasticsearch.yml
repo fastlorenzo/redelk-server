@@ -73,6 +73,36 @@
     validate_certs: no
     force_basic_auth: yes
 
+- name: Creating client 'redelk-ingest' role
+  uri:
+    url: "https://localhost:5601/api/security/role/redelk_ingest"
+    method: PUT
+    headers:
+      "kbn-xsrf": "true"
+    user: elastic
+    password: "{{es_elastic_password}}"
+    force_basic_auth: yes
+    validate_certs: no
+    body_format: json
+    body: '{"elasticsearch":{"cluster":["monitor","cluster:admin/xpack/monitoring/bulk"],"indices":[{"names":["rtops-*","credentials-*","bluecheck-*","email-*","redirtraffic-*","implantsdb","auditbeat*","filebeat*","packetbeat*","apm*","heartbeat*","nagioscheckbeat*","metricbeat*"],"privileges":["create","read","write","monitor","index","manage","delete"]}],"run_as":[]},"kibana":[]}'
+    status_code:
+      - 200
+      - 204
+
+- name: Adding redelk-ingest elasticsearch user
+  uri:
+    url: "https://localhost:9200/_security/user/redelk_ingest"
+    method: POST
+    body_format: json
+    body:
+      password: "{{ es_redelk_ingest_password }}"
+      roles:
+      - redelk_ingest
+    url_username: elastic
+    url_password: "{{ es_elastic_password }}"
+    validate_certs: no
+    force_basic_auth: yes
+
 - name: Changing logstash_system's elasticsearch user password
   uri:
     url: "https://localhost:9200/_security/user/logstash_system/_password"

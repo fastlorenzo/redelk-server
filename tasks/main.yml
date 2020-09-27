@@ -48,6 +48,11 @@
   tags:
     - nginx
 
+# Setup filebeat
+- import_tasks: filebeat.yml
+  tags:
+    - filebeat
+
 # Setup RedELK
 - import_tasks: redelk-setup.yml
   tags:
@@ -60,3 +65,9 @@
 - import_tasks: cron.yml
   tags:
     - cron
+
+# Setup SSH reverse tunnel to client if redelk_client_connection_mode == 'reverse'
+- import_tasks: ssh-tunnel.yml
+  tags:
+    - ssh-tunnel
+  when: redelk_client_connection_mode == 'reverse'

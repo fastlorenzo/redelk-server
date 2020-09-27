@@ -13,6 +13,8 @@ es_kibana_password: kibana
 es_redelk_user: redelk
 # es_redelk_password | ElasticSearch RedELK user's password
 es_redelk_password: redelk
+# es_redelk_ingest | ElasticSearch redelk-ingest user's password (used by logstash)
+es_redelk_ingest_password: redelk
 # es_kibana_encryptionKey | Kibana encryption key (32 char alphanumeric)
 es_kibana_encryptionKey: "sLOVUK5MLv0VDhKsMlQcjgAaSMLXLLVy"
 # optsec_dir | Base directory for components install (where customer data will be stored) - allows to store on an encrypted partition/disk
@@ -49,3 +51,5 @@ redteam_ips: []
 unknown_ips: []
 # domains | List of domain names used for the exercise
 domains: []
+# redelk_client_connection_mode | Sets how RedELK clients connects to filebeat `direct` (client connects to RedELK server IP directly) or `reverse` (reverse SSH tunnel is made from RedELK server to clients)
+redelk_client_connection_mode: "reverse"

@@ -1,0 +1,43 @@
+---
+- name: Install depencies packages (apt)
+  become: yes
+  apt:
+    name:
+      - autossh
+    state: present
+    update_cache: yes
+  tags:
+    - packages
+
+- name: Copy autossh systemd services to the hosts
+  become: yes
+  template:
+    src: templates/etc/systemd/system/autossh-tunnel-monitored_server.service.j2
+    dest: "/etc/systemd/system/autossh-tunnel-{{ item }}.service"
+    owner: root
+    group: root
+    mode: 755
+  vars:
+    monitored_server: "{{ item }}"
+    monitored_server_ip: "{{ hostvars[item].ansible_host }}"
+  with_items:
+    - "{{ hostvars.values()|list|json_query(\"[?type=='redirector'].ansible_hostname\") }}"
+    - "{{ hostvars.values()|list|json_query(\"[?type=='c2'].ansible_hostname\") }}"
+  register: autosshsvc
+  tags:
+    - ssh
+
+- name: Reload and enable autossh services
+  become: yes
+  systemd:
+    name: "autossh-tunnel-{{ item }}"
+    state: restarted
+    enabled: yes
+    daemon_reload: yes
+  with_items:
+    - "{{ hostvars.values()|list|json_query(\"[?type=='redirector'].ansible_hostname\") }}"
+    - "{{ hostvars.values()|list|json_query(\"[?type=='c2'].ansible_hostname\") }}"
+  when: autosshsvc.changed
+  tags:
+    - ssh
+    - service

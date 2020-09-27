@@ -52,6 +52,7 @@
       - python-passlib
       - python-pil
       - python-setuptools
+      - ca-certificates
     state: present
     update_cache: yes
 

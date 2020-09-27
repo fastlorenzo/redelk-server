@@ -6,8 +6,8 @@ output {
       manage_template => false
       ilm_enabled => true
       index => "%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM.dd}-000001"
-      user => ["logstash"]
-      password => ["{{es_logstash_system_password}}"]
+      user => ["redelk_ingest"]
+      password => ["{{ es_redelk_ingest_password }}"]
       ssl => true
       cacert => "/etc/logstash/redelkCA.crt"
     }

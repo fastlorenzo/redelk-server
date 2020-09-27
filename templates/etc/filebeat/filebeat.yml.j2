@@ -1,0 +1,68 @@
+{{ ansible_managed | comment }}
+
+filebeat.modules:
+
+- module: system
+  # Syslog
+  syslog:
+    enabled: true
+  # Authorization logs
+  auth:
+    enabled: true
+
+- module: auditd
+  log:
+    enabled: true
+
+- module: elasticsearch
+  # Server log
+  server:
+    enabled: true
+  gc:
+    enabled: true
+  audit:
+    enabled: true
+  slowlog:
+    enabled: true
+  deprecation:
+    enabled: true
+
+- module: iptables
+  log:
+    enabled: true
+
+- module: kibana
+  # All logs
+  log:
+    enabled: true
+
+- module: logstash
+  # logs
+  log:
+    enabled: true
+  # Slow logs
+  slowlog:
+   enabled: true
+
+- module: nginx
+  # Access logs
+  access:
+    enabled: true
+  # Error logs
+  error:
+    enabled: true
+
+setup.ilm.enabled: false
+
+name: "{{ ansible_hostname }}"
+
+output.logstash:
+  hosts: ["localhost:5044"]
+  ssl.certificate_authorities:
+    - /etc/filebeat/redelkCA.crt
+
+setup.kibana:
+  host: "https://localhost:5601"
+  ssl.enabled: true
+  ssl.certificate_authorities:
+    - /etc/filebeat/redelkCA.crt

@@ -12,8 +12,8 @@ output {
       sniffing => true
       manage_template => false
       index => "rtops-%{+YYYY.MM.dd}"
-      user => ["logstash"]
-      password => ["{{es_logstash_system_password}}"]
+      user => ["redelk_ingest"]
+      password => ["{{ es_redelk_ingest_password }}"]
       ssl => true
       cacert => "/etc/logstash/redelkCA.crt"
     }
@@ -28,8 +28,8 @@ output {
       sniffing => true
       manage_template => false
       index => "implantsdb"
-      user => ["logstash"]
-      password => ["{{es_logstash_system_password}}"]
+      user => ["redelk_ingest"]
+      password => ["{{ es_redelk_ingest_password }}"]
       ssl => true
       cacert => "/etc/logstash/redelkCA.crt"
     }
@@ -43,8 +43,8 @@ output {
       sniffing => true
       manage_template => false
       index => "redirtraffic-%{+YYYY.MM.dd}"
-      user => ["logstash"]
-      password => ["{{es_logstash_system_password}}"]
+      user => ["redelk_ingest"]
+      password => ["{{ es_redelk_ingest_password }}"]
       ssl => true
       cacert => "/etc/logstash/redelkCA.crt"
     }
@@ -60,8 +60,8 @@ output {
       sniffing => true
       manage_template => false
       index => "credentials-%{+YYYY.MM.dd}"
-      user => ["logstash"]
-      password => ["{{es_logstash_system_password}}"]
+      user => ["redelk_ingest"]
+      password => ["{{ es_redelk_ingest_password }}"]
       ssl => true
       cacert => "/etc/logstash/redelkCA.crt"
     }
