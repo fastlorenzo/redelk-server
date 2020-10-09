@@ -1,3 +1,4 @@
+{% if monitor_hosts: %}
 output {
   if ([@metadata][beat] == "heartbeat") {
     elasticsearch{
@@ -5,7 +6,9 @@ output {
       sniffing => true
       manage_template => false
       ilm_enabled => true
-      index => "%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM.dd}-000001"
+      ilm_rollover_alias => "heartbeat-{{ es_version }}"
+      ilm_policy => "heartbeat"
+      template_name => "heartbeat-{{ es_version }}"
       user => ["redelk_ingest"]
       password => ["{{ es_redelk_ingest_password }}"]
       ssl => true
@@ -13,3 +16,4 @@ output {
     }
   }
 }
+{% endif %}

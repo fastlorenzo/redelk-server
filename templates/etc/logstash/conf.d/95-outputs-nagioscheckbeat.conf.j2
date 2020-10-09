@@ -1,11 +1,14 @@
+{% if monitor_hosts: %}
 output {
   if ([@metadata][beat] == "nagioscheckbeat") {
     elasticsearch{
       hosts => ["localhost:9200"]
       sniffing => true
       manage_template => false
-      ilm_enabled => false
-      index => "%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM.dd}-000001"
+      ilm_enabled => true
+      ilm_rollover_alias => "nagioscheckbeat-{{ es_version }}"
+      ilm_policy => "nagioscheckbeat"
+      template_name => "nagioscheckbeat-{{ es_version }}"
       user => ["redelk_ingest"]
       password => ["{{ es_redelk_ingest_password }}"]
       ssl => true
@@ -13,3 +16,4 @@ output {
     }
   }
 }
+{% endif %}

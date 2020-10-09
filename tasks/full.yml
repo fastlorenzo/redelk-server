@@ -48,6 +48,7 @@
       - "/usr/share/redelk/jupyter:/home/jovyan/work"
     etc_hosts:
       elasticsearch: 192.168.254.1
+    purge_networks: yes
     networks:
       - name: dockernetredelk
         ipv4_address: "192.168.254.2"
@@ -90,6 +91,7 @@
       NEO4J_dbms_memory_pagecache_size: "{{ neo4j_memory }}"
     etc_hosts:
       elasticsearch: 192.168.254.1
+    purge_networks: yes
     networks:
       - name: dockernetredelk
         ipv4_address: "192.168.254.3"

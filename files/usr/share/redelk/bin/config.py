@@ -7,6 +7,9 @@ with open('/etc/redelk/alarm.json.conf') as json_data:
 Verbosity = 0 #Verbosity
 if "Verbosity" in d: Verbosity = int(d['Verbosity'])
 
+DEBUG = 0 #Debug 1 or 0
+if "DEBUG" in d: DEBUG = int(d['DEBUG'])
+
 interval = 3600 #interval for rechecking IOC's
 if "interval" in d: interval = int(d['interval'])
 
@@ -48,3 +51,33 @@ if "tempDir" in d: tempDir = d['tempDir']
 
 msTeamsWebhookURL = ""
 if "msTeamsWebhookURL" in d: msTeamsWebhookURL = d['msTeamsWebhookURL']
+
+#### Notifications
+notifications = {
+    'email': {
+        'enabled': False,
+        'smtp': {
+            'host': 'localhost',
+            'port': 25,
+            'login': '',
+            'pass': ''
+        },
+        'from': '',
+        'to': []
+    },
+    'msteams': {
+        'enabled': False,
+        'webhook_url': ''
+    },
+    'slack': {
+        'enabled': False,
+        'webhook_url': ''
+    }
+}
+if 'notifications' in d:
+    for n in notifications:
+        if n in d['notifications']:
+            notifications[n] = d['notifications'][n]
+
+es_connection = ['http://localhost:9200']
+if 'es_connection' in d: es_connection = d['es_connection']

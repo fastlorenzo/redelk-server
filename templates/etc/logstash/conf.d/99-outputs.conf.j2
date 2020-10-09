@@ -11,7 +11,10 @@ output {
       hosts => ["localhost:9200"]
       sniffing => true
       manage_template => false
-      index => "rtops-%{+YYYY.MM.dd}"
+      ilm_enabled => true
+      ilm_rollover_alias => "rtops"
+      ilm_policy => "redelk"
+      template_name => "rtops"
       user => ["redelk_ingest"]
       password => ["{{ es_redelk_ingest_password }}"]
       ssl => true
@@ -27,6 +30,7 @@ output {
       hosts => ["localhost:9200"]
       sniffing => true
       manage_template => false
+      ilm_enabled => false
       index => "implantsdb"
       user => ["redelk_ingest"]
       password => ["{{ es_redelk_ingest_password }}"]
@@ -42,7 +46,10 @@ output {
       hosts => ["localhost:9200"]
       sniffing => true
       manage_template => false
-      index => "redirtraffic-%{+YYYY.MM.dd}"
+      ilm_enabled => true
+      ilm_rollover_alias => "redirtraffic"
+      ilm_policy => "redelk"
+      template_name => "redirtraffic"
       user => ["redelk_ingest"]
       password => ["{{ es_redelk_ingest_password }}"]
       ssl => true
@@ -71,21 +78,29 @@ output {
     #}
   }
 
-  # if [type] == "bluecheck" {
-  #   elasticsearch {
-  #     hosts => ["127.0.0.1:9200"]
-  #     sniffing => true
-  #     manage_template => false
-  #     index => "bluecheck-%{+YYYY.MM.dd}"
-  #   }
-  # }
-  #
-  # if [infralogtype] == "email" {
-  #   elasticsearch {
-  #     hosts => ["127.0.0.1:9200"]
-  #     sniffing => true
-  #     manage_template => false
-  #     index => "email-%{+YYYY.MM.dd}"
-  #   }
-  # }
+  if [type] == "bluecheck" {
+    elasticsearch {
+      hosts => ["localhost:9200"]
+      sniffing => true
+      manage_template => false
+      index => "bluecheck-%{+YYYY.MM.dd}"
+      user => ["redelk_ingest"]
+      password => ["{{ es_redelk_ingest_password }}"]
+      ssl => true
+      cacert => "/etc/logstash/redelkCA.crt"
+    }
+  }
+
+  if [infralogtype] == "email" {
+    elasticsearch {
+      hosts => ["localhost:9200"]
+      sniffing => true
+      manage_template => false
+      index => "email-%{+YYYY.MM.dd}"
+      user => ["redelk_ingest"]
+      password => ["{{ es_redelk_ingest_password }}"]
+      ssl => true
+      cacert => "/etc/logstash/redelkCA.crt"
+    }
+  }
 }

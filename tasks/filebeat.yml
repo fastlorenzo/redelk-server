@@ -2,7 +2,7 @@
   become: yes
   apt:
     name:
-      - filebeat
+      - filebeat={{ es_version }}
     state: present
     update_cache: yes
   notify: setup filebeat dashboards
@@ -15,6 +15,9 @@
   template:
     src: etc/filebeat/filebeat.yml.j2
     dest: /etc/filebeat/filebeat.yml
+    owner: root
+    group: root
+    mode: u=rwX,g=rX,o=-rwx
   notify: restart filebeat
   tags:
     - config
@@ -24,6 +27,9 @@
   copy:
     src: certificates/redelk/redelkCA.crt
     dest: /etc/filebeat/redelkCA.crt
+    owner: root
+    group: root
+    mode: u=rwX,g=rX,o=-rwx
   notify: restart filebeat
   tags:
     - pki

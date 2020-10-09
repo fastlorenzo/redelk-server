@@ -72,6 +72,9 @@
     recurse: "yes"
   delegate_to: localhost
 
+- name: Flush handlers
+  meta: flush_handlers
+
 - name: Copy RedELK CA to /usr/local/share/ca-certificates
   become: yes
   copy:

@@ -43,6 +43,7 @@ redelk_alarm_fromAddr: "redelk@bernardi.be"
 redelk_alarm_toAddr: "redelk@bernardi.be"
 redelk_alarm_tempDir: "/tmp"
 redelk_alarm_msteams_webhook_url: ""
+redelk_alarm_slack_webhook_url: ""
 # customer_ips | List of customer's IP addresses
 customer_ips: []
 # redteam_ips | List of Red Team's IP addresses
@@ -53,3 +54,5 @@ unknown_ips: []
 domains: []
 # redelk_client_connection_mode | Sets how RedELK clients connects to filebeat `direct` (client connects to RedELK server IP directly) or `reverse` (reverse SSH tunnel is made from RedELK server to clients)
 redelk_client_connection_mode: "reverse"
+# monitor_hosts | Set to true to support monitoring hosts (metricbeat, packetbeat, ...)
+monitor_hosts: false

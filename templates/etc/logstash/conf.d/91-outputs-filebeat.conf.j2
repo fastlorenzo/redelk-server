@@ -1,3 +1,4 @@
+{% if monitor_hosts: %}
 output {
   if [agent][type] == "filebeat" and ![c2][log][type] and ![infra][log][type] {
     if [@metadata][pipeline] {
@@ -6,7 +7,9 @@ output {
         sniffing => true
         manage_template => false
         ilm_enabled => true
-        index => "%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM.dd}-000001"
+        ilm_rollover_alias => "filebeat-{{ es_version }}"
+        ilm_policy => "filebeat"
+        template_name => "filebeat-{{ es_version }}"
         pipeline => "%{[@metadata][pipeline]}"
         user => ["redelk_ingest"]
         password => ["{{ es_redelk_ingest_password }}"]
@@ -19,7 +22,9 @@ output {
         sniffing => true
         manage_template => false
         ilm_enabled => true
-        index => "%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM.dd}-000001"
+        ilm_rollover_alias => "filebeat-{{ es_version }}"
+        ilm_policy => "filebeat"
+        template_name => "filebeat-{{ es_version }}"
         user => ["redelk_ingest"]
         password => ["{{ es_redelk_ingest_password }}"]
         ssl => true
@@ -28,3 +33,4 @@ output {
     }
   }
 }
+{% endif %}

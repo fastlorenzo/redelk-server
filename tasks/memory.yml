@@ -3,16 +3,19 @@
 - name: Limited install - Less than 4G memory
   ansible.builtin.set_fact:
     es_memory: 1g
+    logstash_memory: 1g
   when: redelk_limited_install and ansible_memory_mb.real.total <= 3999
 
 - name: Limited install - Less than 8G memory
   ansible.builtin.set_fact:
     es_memory: 2g
+    logstash_memory: 1500m
   when: redelk_limited_install and ansible_memory_mb.real.total >= 4000 and ansible_memory_mb.real.total <= 7999
 
 - name: Limited install - More than 8G memory
   ansible.builtin.set_fact:
     es_memory: 4g
+    logstash_memory: 2g
   when: redelk_limited_install and ansible_memory_mb.real.total >= 8000
 
 # Full install
@@ -24,54 +27,63 @@
 - name: Full install - Between 8G and 9G memory
   ansible.builtin.set_fact:
     es_memory: 1g
+    logstash_memory: 1g
     neo4j_memory: 2G
   when: not redelk_limited_install and ansible_memory_mb.real.total >= 8000 and ansible_memory_mb.real.total <= 8999
 
 - name: Full install - Between 9G and 10G memory
   ansible.builtin.set_fact:
     es_memory: 1g
+    logstash_memory: 1g
     neo4j_memory: 3G
   when: not redelk_limited_install and ansible_memory_mb.real.total >= 9000 and ansible_memory_mb.real.total <= 9999
 
 - name: Full install - Between 10G and 11G memory
   ansible.builtin.set_fact:
     es_memory: 2g
+    logstash_memory: 1g
     neo4j_memory: 3G
   when: not redelk_limited_install and ansible_memory_mb.real.total >= 10000 and ansible_memory_mb.real.total <= 10999
 
 - name: Full install - Between 11G and 12G memory
   ansible.builtin.set_fact:
     es_memory: 2g
+    logstash_memory: 2g
     neo4j_memory: 4G
   when: not redelk_limited_install and ansible_memory_mb.real.total >= 11000 and ansible_memory_mb.real.total <= 11999
 
 - name: Full install - Between 12G and 13G memory
   ansible.builtin.set_fact:
     es_memory: 3g
+    logstash_memory: 2g
     neo4j_memory: 4G
   when: not redelk_limited_install and ansible_memory_mb.real.total >= 12000 and ansible_memory_mb.real.total <= 12999
 
 - name: Full install - Between 13G and 14G memory
   ansible.builtin.set_fact:
     es_memory: 3g
+    logstash_memory: 2g
     neo4j_memory: 4500M
   when: not redelk_limited_install and ansible_memory_mb.real.total >= 13000 and ansible_memory_mb.real.total <= 13999
 
 - name: Full install - Between 14G and 15G memory
   ansible.builtin.set_fact:
     es_memory: 3g
+    logstash_memory: 3g
     neo4j_memory: 5G
   when: not redelk_limited_install and ansible_memory_mb.real.total >= 14000 and ansible_memory_mb.real.total <= 14999
 
 - name: Full install - Between 15G and 16G memory
   ansible.builtin.set_fact:
     es_memory: 4g
+    logstash_memory: 3g
     neo4j_memory: 5G
   when: not redelk_limited_install and ansible_memory_mb.real.total >= 15000 and ansible_memory_mb.real.total <= 15999
 
 - name: Full install - More than 16G memory
   ansible.builtin.set_fact:
     es_memory: 5g
+    logstash_memory: 4g
     neo4j_memory: 5G
   when: not redelk_limited_install and ansible_memory_mb.real.total >= 16000
 

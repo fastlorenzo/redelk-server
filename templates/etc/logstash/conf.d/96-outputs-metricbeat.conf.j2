@@ -1,3 +1,4 @@
+{% if monitor_hosts: %}
 output {
   if [agent][type] == "metricbeat" {
     elasticsearch{
@@ -5,7 +6,9 @@ output {
       sniffing => true
       manage_template => false
       ilm_enabled => true
-      index => "%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM.dd}-000001"
+      ilm_rollover_alias => "metricbeat-{{ es_version }}"
+      ilm_policy => "metricbeat"
+      template_name => "metricbeat-{{ es_version }}"
       user => ["redelk_ingest"]
       password => ["{{ es_redelk_ingest_password }}"]
       ssl => true
@@ -13,3 +16,4 @@ output {
     }
   }
 }
+{% endif %}
