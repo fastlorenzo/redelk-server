@@ -1,67 +1,13 @@
-- name: Install depencies packages (apt)
-  become: yes
-  apt:
-    name:
-      - apt-transport-https
-      - python3-netaddr
-      - unzip
-      - geoipupdate
-    state: present
-    update_cache: yes
-
-- name: Install Elastic repository
-  become: yes
-  block:
-  - name: Adding GPG key of Elastic
-    apt_key:
-      url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
-      state: present
-  - name: Adding Elastic APT repository
-    apt_repository:
-      repo: deb https://artifacts.elastic.co/packages/7.x/apt stable main
-      state: present
-      filename: elastic-7.x
-  tags:
-    - packages
-
-- name: Adding openjdk apt repository
-  become: yes
-  apt_repository:
-    repo: ppa:openjdk-r/ppa
-
-- name: Installing OpenJDK 11 (apt)
-  become: yes
-  apt:
-    name:
-      - openjdk-11-jre-headless
-    state: present
-    update_cache: yes
-
-- name: Installing RedELK packages (apt)
-  become: yes
-  apt:
-    name:
-      - logstash=1:{{ es_version }}-1
-      - elasticsearch={{ es_version }}
-      - kibana={{ es_version }}
-      - nginx
-      - python3-passlib
-      - python3-pil
-      - python3-pip
-      - python3-setuptools
-      - python-passlib
-      - python-pil
-      - python-setuptools
-      - ca-certificates
-    state: present
-    update_cache: yes
-
-- name: Installing full install packages requirements (apt)
+- name: Installing packages requirements (apt)
   become: yes
   apt:
     name:
       - docker.io
+      - docker-compose
+      - unzip
+      - apt-transport-https
+      - python3-netaddr
       - python3-docker
+      - python3-passlib
     state: present
     update_cache: yes
-  when: not (redelk_limited_install | bool)

@@ -1,0 +1,47 @@
+{
+    "DEBUG": "0",
+    "Verbosity": "{{ redelk_alarm_Verbosity }}",
+    "interval": {{ redelk_alarm_interval }},
+    "tempDir": "{{ redelk_alarm_tempDir }}",
+    "es_connection": [
+        "https://{{ es_redelk_user }}:{{ es_redelk_password }}@redelk-elasticsearch:9200"
+    ],
+    "notifications": {
+        "email": {
+            "enabled": true,
+            "smtp": {
+                "host": "{{ redelk_alarm_smtpSrv }}",
+                "port": {{ redelk_alarm_smtpPort }},
+                "login": "{{redelk_alarm_smtpName }}",
+                "pass": "{{ redelk_alarm_smtpPass }}"
+            },
+            "from": "{{ redelk_alarm_fromAddr }}",
+            "to": ["{{ redelk_alarm_toAddr }}"]
+        },
+        "msteams": {
+            "enabled": true,
+            "webhook_url": "{{ redelk_alarm_msteams_webhook_url }}"
+        },
+        "slack": {
+            "enabled": false,
+            "webhook_url": "{{ redelk_alarm_slack_webhook_url }}"
+        }
+    },
+    "alarms": {
+        "alarm_dummy": {
+            "enabled": false
+        },
+        "alarm_filehash": {
+            "enabled": true,
+            "vt_api_key": "{{ redelk_alarm_vt_apikey }}",
+            "ibm_basic_auth": "{{ redelk_alarm_ibm_BasicAuth }}",
+            "ha_api_key": "{{ redelk_alarm_HybridAnalysisAPIKEY }}"
+        },
+        "alarm_httptraffic": {
+            "enabled": true
+        },
+        "alarm_useragent": {
+            "enabled": true
+        }
+    }
+}

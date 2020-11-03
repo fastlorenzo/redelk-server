@@ -1,46 +1,101 @@
 ---
-- name: Copying RedELK background running scripts (remote logs, thumbnails, enrichment, alarms, etc)
+# 1. clone RedELK repo
+# 2. prepare steps from init script
+# 3. prepare stesp from elkserver setup
+# 4. deploy using docker-compose
+- name: Checkout RedELK git repo (localhost)
+  git:
+    repo: 'https://github.com/outflanknl/RedELK.git'
+    dest: "{{ redelk_repo_path }}"
+    version: maindev
+  ignore_errors: yes
+  delegate_to: localhost
+
+- name: Creating RedELK working directory
+  become: yes
+  file:
+    path: "{{ optsec_dir }}/{{ redelk_user }}/mounts/{{ item }}"
+    state: directory
+    mode: 0755
+  with_items:
+    - certs
+    - jupyter-workbooks
+    - logstash-config
+    - nginx-config
+    - redelk-config/etc/cron.d
+    - redelk-config/etc/redelk
+    - redelk-logs
+    - redelk-ssh
+    - redelk-www
+
+# jupyter
+- name: Copying Jupyter workbooks from RedELK repository
   become: yes
   copy:
-    src: usr/share/redelk/bin/
-    dest: /usr/share/redelk/bin/
+    src: "{{ item }}"
+    dest: "{{ optsec_dir }}/{{ redelk_user }}/mounts/jupyter-workbooks/{{ item | basename }}"
+  with_fileglob:
+    - "{{ redelk_repo_path }}/elkserver/mounts/jupyter-workbooks/*"
 
-- name: Copying RedELK background running scripts (remote logs, thumbnails, enrichment, alarms, etc)
+# logstash
+- name: Copying logstash config files from RedELK repository
+  become: yes
+  copy:
+    src: "{{ item }}"
+    dest: "{{ optsec_dir }}/{{ redelk_user }}/mounts/logstash-config/{{ item | basename }}"
+  with_fileglob:
+    - "{{ redelk_repo_path }}/elkserver/docker/redelk-logstash/redelkinstalldata/redelk-main/conf.d/*"
+
+# nginx
+- name: Copying nginx config file
+  become: yes
+  template:
+    src: nginx-config/default.conf.j2
+    dest: "{{ optsec_dir }}/{{ redelk_user }}/mounts/nginx-config/default.conf"
+
+- name: Create Nginx htpasswd file
+  become: yes
+  htpasswd:
+    path: "{{ optsec_dir }}/{{ redelk_user }}/mounts/nginx-config/htpasswd.users"
+    name: "{{ es_redelk_user }}"
+    password: "{{ es_redelk_password }}"
+    owner: root
+    group: www-data
+    mode: 0640
+
+# cron
+- name: Copying RedELK cron file
+  become: yes
+  template:
+    src: redelk-config/etc/cron.d/redelk.j2
+    dest: "{{ optsec_dir }}/{{ redelk_user }}/mounts/redelk-config/etc/cron.d/redelk"
+
+# RedELK config files
+- name: Copying RedELK config files
   become: yes
   template:
     src: "{{ item }}"
-    dest: "/usr/share/redelk/bin/{{ item | basename | regex_replace('.j2','') }}"
+    dest: "{{ optsec_dir }}/{{ redelk_user }}/mounts/redelk-config/etc/redelk/{{ item | basename | regex_replace('.j2','') }}"
   with_fileglob:
-    - ../templates/usr/share/redelk/bin/*
+    - ../templates/redelk-config/etc/redelk/*.j2
 
-- name: Installing python elasticsearch library
+# Docker-compose
+- name: Copying docker-compose from RedELK repository
   become: yes
-  pip:
-    name:
-      - elasticsearch
-      - pymsteams
-    executable: pip3
+  copy:
+    src: "{{ redelk_repo_path }}/elkserver/redelk-full.yml"
+    dest: "{{ optsec_dir }}/{{ redelk_user }}/redelk-full.yml"
+- name: Generating docker-compose .env file
+  become: yes
+  template:
+    src: docker-env.j2
+    dest: "{{ optsec_dir }}/{{ redelk_user }}/.env"
+    mode: 0640
 
-- name: Installing Chameleon python libraries (using pip)
+- name: Run `docker-compose up` again
   become: yes
-  pip:
-    requirements: /usr/share/redelk/bin/Chameleon/requirements.txt
-
-- name: Creating RedELK log directory and setting permissions
-  become: yes
-  file:
-    path: /var/log/redelk
-    owner: "{{ redelk_user }}"
-    group: "{{ redelk_user }}"
-    state: directory
-    mode: 0770
-
-- name: Recursively setting permissions of /usr/share/redelk/bin folder
-  become: yes
-  file:
-    path: /usr/share/redelk/bin
-    state: directory
-    recurse: yes
-    owner: "{{ redelk_user }}"
-    group: "{{ redelk_user }}"
-    mode: 0755
+  community.general.docker_compose:
+    project_src: "{{ optsec_dir }}/{{ redelk_user }}"
+    files: "redelk-full.yml"
+    build: no
+  register: output

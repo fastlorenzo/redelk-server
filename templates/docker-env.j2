@@ -1,0 +1,50 @@
+#
+# Part of RedELK
+# Docker file for RedELK
+#
+# Author: Outflank B.V. / Marc Smeets
+#
+#
+
+# RedELK generic variables
+REDELKVERSION={{ redelk_version }}
+
+
+# Docker generic variables
+COMPOSE_PROJECT_NAME=redelk
+
+
+# Variables for ES, Logstash and Kibana
+CERTS_DIR_ES=/usr/share/elasticsearch/config/certificates
+CERTS_DIR_KBN=/usr/share/kibana/config/certificates
+CERTS_DIR_LOGSTASH=/usr/share/logstash/config/certificates
+CERTS_DIR_REDELK=/usr/share/logstash/redelk-main/certs
+CERTS_DIR_NGINX=/etc/nginx/certs
+# Below you can configure the location to the certificates used in logstash
+CERTS_LOGSTASH_INPUT_KEY=/usr/share/logstash/config/certificates/redelk-logstash/redelk-logstash.pkcs8.key
+CERTS_LOGSTASH_INPUT_CRT=/usr/share/logstash/config/certificates/redelk-logstash/redelk-logstash.crt
+CERTS_LOGSTASH_OUTPUT_CA=/usr/share/logstash/config/certificates/ca/ca.crt
+CREDS_kibana_system={{ es_kibana_password }}
+CREDS_logstash_system={{ es_logstash_system_password }}
+CREDS_redelk_ingest={{ es_redelk_ingest_password }}
+CREDS_redelk={{ es_redelk_password }}
+ELASTIC_PASSWORD={{ es_elastic_password }}
+# ES_MEMORY is used to instruct Elasticsearch the amount of memory to use. It is dynamically determined and set by the install-elkserver.sh script.
+# You can manually override here, e.g. 1g (lower case)
+ES_JAVA_OPTS=-Xms{{ es_heap_size }} -Xmx{{ es_heap_size }}
+ES_URL=https://redelk-elasticsearch:9200
+KBN_XPACK_ENCRYPTEDSAVEDOBJECTS={{ es_kibana_encryptionKey }}
+
+
+# Neo4J / Bloodhound specific variables. $
+NEO4J_AUTH=neo4j/BloodHound
+# NEO4J_MEMOMORY is used to instruct Neo4J the amount of memory to use. It is dynamically determined and set by the install-elkserver.sh script.
+# You can manually override here, e.g. 1G (upper case)
+NEO4J_dbms_memory_heap_initial__size=2G
+NEO4J_dbms_memory_heap_max__size=2G
+NEO4J_dbms_memory_pagecache_size=2G
+
+# Variables for nginx certificates
+TLS_CERTIFICATE_PATH=/etc/nginx/certs/elkserver.crt
+TLS_KEY_PATH=/etc/nginx/certs/elkserver.key.pem
+TLS_CA_PATH=/etc/nginx/certs/redelkCA.crt
