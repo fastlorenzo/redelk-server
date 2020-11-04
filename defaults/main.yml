@@ -1,8 +1,6 @@
 ---
 # es_version | Elastic version
-es_version: "7.8.1"
-# es_heap_size | ElasticSearch memory size
-es_heap_size: 1g
+es_version: "7.9.2"
 # es_elastic_password | ElasticSearch users
 es_elastic_password: elastic
 # es_logstash_system_password | ElasticSearch `logstash_system` user's password
@@ -27,25 +25,16 @@ ssh_keys_path: "ssh_keys"
 redelk_cert_path: "certificates/redelk"
 # redelk_repo_path | Local path to the RedELK git repository. will be cloned if doesn't exist
 redelk_repo_path: "RedELK"
+# redelk_repo | RedELK docker image repository
+redelk_repo: "outflanknl"
 # redelk_version | RedELK version to install (ignored if the git repository defined in `redelk_repo_path` is already cloned)
 redelk_version: "maindev"
-# redelk_limited_install | If false, Jupyter notebooks and BloodHound/Neo4J will be installed as well
-redelk_limited_install: false
+# redelk_install_type | (`full` or `limited`) If `full`, Jupyter notebooks and BloodHound/Neo4J will be installed as well
+redelk_install_type: "full"
 # RedELK config
 redelk_alarm_Verbosity: "0"
 redelk_alarm_interval: "3600"
-redelk_alarm_vt_apikey: "<<INSERT_API_KEY>>"
-redelk_alarm_ibm_BasicAuth: "Basic <<REPLACE>>"
-redelk_alarm_HybridAnalysisAPIKEY: "<<INSERT_API_KEY>>"
-redelk_alarm_smtpSrv: "mail.bernardi.be"
-redelk_alarm_smtpPort: "587"
-redelk_alarm_smtpName: "redelk@bernardi.be"
-redelk_alarm_smtpPass: "<<SMTP_PASS>>"
-redelk_alarm_fromAddr: "redelk@bernardi.be"
-redelk_alarm_toAddr: "redelk@bernardi.be"
 redelk_alarm_tempDir: "/tmp"
-redelk_alarm_msteams_webhook_url: ""
-redelk_alarm_slack_webhook_url: ""
 # customer_ips | List of customer's IP addresses
 customer_ips: []
 # redteam_ips | List of Red Team's IP addresses
@@ -58,3 +47,34 @@ domains: []
 redelk_client_connection_mode: "reverse"
 # monitor_hosts | Set to true to support monitoring hosts (metricbeat, packetbeat, ...)
 monitor_hosts: false
+# redelk_alarms | Alarm configuration dict (cf. config.json in RedELK repo for possible options)
+redelk_alarms:
+  alarm_dummy:
+    enabled: false
+  alarm_filehash:
+    enabled: true
+    vt_api_key: "<<INSERT_API_KEY>>"
+    ibm_basic_auth: "Basic <<REPLACE>>"
+    ha_api_key: "<<INSERT_API_KEY>>"
+  alarm_httptraffic:
+    enabled: true
+  alarm_useragent:
+    enabled: true
+# redelk_notifications | Alarm notifications dict (cf. config.json in RedELK repo for possible options)
+redelk_notifications:
+  email:
+    enabled: true
+    smtp:
+      host: "mail.bernardi.be"
+      port: "587"
+      login: "redelk@bernardi.be"
+      pass: "<<SMTP_PASS>>"
+    from": "redelk@bernardi.be"
+    to:
+      - "redelk@bernardi.be"
+  msteams:
+    enabled: true
+    webhook_url: ""
+  slack:
+    enabled: false
+    webhook_url: ""

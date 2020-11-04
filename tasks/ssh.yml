@@ -38,8 +38,6 @@
     owner: "{{ redelk_user }}"
     group: "{{ redelk_user }}"
     mode: 0600
-  # when: redelkusrsshkey.changed or createsshdir.changed
-
 - name: Copying ssh public key to remote hosts
   become: yes
   copy:
@@ -48,4 +46,20 @@
     owner: "{{ redelk_user }}"
     group: "{{ redelk_user }}"
     mode: 0600
-  # when: redelkusrsshkey.changed or createsshdir.changed
+
+- name: Copying ssh private key to docker env
+  become: yes
+  copy:
+    src: "{{ ssh_keys_path }}/{{ redelk_user }}_id_rsa"
+    dest: "{{ optsec_dir }}/{{ redelk_user }}/mounts/redelk-ssh/id_rsa"
+    owner: "{{ redelk_user }}"
+    group: "{{ redelk_user }}"
+    mode: 0600
+- name: Copying ssh public key to docker env
+  become: yes
+  copy:
+    src: "{{ ssh_keys_path }}/{{ redelk_user }}_id_rsa.pub"
+    dest: "{{ optsec_dir }}/{{ redelk_user }}/mounts/redelk-ssh/id_rsa.pub"
+    owner: "{{ redelk_user }}"
+    group: "{{ redelk_user }}"
+    mode: 0600

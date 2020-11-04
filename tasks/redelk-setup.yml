@@ -5,9 +5,9 @@
 # 4. deploy using docker-compose
 - name: Checkout RedELK git repo (localhost)
   git:
-    repo: 'https://github.com/outflanknl/RedELK.git'
+    repo: 'https://github.com/{{ redelk_repo }}/RedELK.git'
     dest: "{{ redelk_repo_path }}"
-    version: maindev
+    version: "{{ redelk_version }}"
   ignore_errors: yes
   delegate_to: localhost
 
@@ -83,8 +83,8 @@
 - name: Copying docker-compose from RedELK repository
   become: yes
   copy:
-    src: "{{ redelk_repo_path }}/elkserver/redelk-full.yml"
-    dest: "{{ optsec_dir }}/{{ redelk_user }}/redelk-full.yml"
+    src: "{{ redelk_repo_path }}/elkserver/redelk-{{ redelk_install_type }}.yml"
+    dest: "{{ optsec_dir }}/{{ redelk_user }}/redelk-{{ redelk_install_type }}.yml"
 - name: Generating docker-compose .env file
   become: yes
   template:
@@ -96,6 +96,6 @@
   become: yes
   community.general.docker_compose:
     project_src: "{{ optsec_dir }}/{{ redelk_user }}"
-    files: "redelk-full.yml"
+    files: "redelk-{{ redelk_install_type }}.yml"
     build: no
   register: output
