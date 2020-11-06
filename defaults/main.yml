@@ -15,6 +15,8 @@ es_redelk_password: redelk
 es_redelk_ingest_password: redelk
 # es_kibana_encryptionKey | Kibana encryption key (32 char alphanumeric)
 es_kibana_encryptionKey: "sLOVUK5MLv0VDhKsMlQcjgAaSMLXLLVy"
+# neo4j_password | Neo4J password (user: neo4j)
+neo4j_password: "BloodHound"
 # optsec_dir | Base directory for components install (where customer data will be stored) - allows to store on an encrypted partition/disk
 optsec_dir: "/opt"
 # redelk_user | RedELK SSH username (used to sync data between RedELK monitoring server and the clients)
