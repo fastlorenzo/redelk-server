@@ -1,7 +1,7 @@
 galaxy_info:
   author: Lorenzo Bernardi
   description: Role to deploy RedELK server components
-  version: 0.1
+  version: 0.1.1
   license: BSD-3-Clause
   min_ansible_version: 2.9
   platforms:
