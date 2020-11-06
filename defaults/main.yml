@@ -28,7 +28,7 @@ redelk_repo_path: "RedELK"
 # redelk_repo | RedELK docker image repository
 redelk_repo: "outflanknl"
 # redelk_version | RedELK version to install (ignored if the git repository defined in `redelk_repo_path` is already cloned)
-redelk_version: "maindev"
+redelk_version: "v2.0.0-beta.3"
 # redelk_install_type | (`full` or `limited`) If `full`, Jupyter notebooks and BloodHound/Neo4J will be installed as well
 redelk_install_type: "full"
 # RedELK config
