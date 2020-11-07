@@ -47,6 +47,14 @@
     group: "{{ redelk_user }}"
     mode: 0600
 
+- name: Creating RedELK ssh directory
+  become: yes
+  file:
+    path: "{{ optsec_dir }}/{{ redelk_user }}/mounts/redelk-ssh"
+    state: directory
+    owner: "{{ redelk_user }}"
+    group: "{{ redelk_user }}"
+    mode: 0755
 - name: Copying ssh private key to docker env
   become: yes
   copy:
