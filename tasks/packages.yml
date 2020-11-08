@@ -11,8 +11,7 @@
 
 - name: Install python packages requirements (pip)
   pip:
-    name: "{{ item }}"
-  with_items:
+    name:
     - docker-compose
     - docker
     - passlib
