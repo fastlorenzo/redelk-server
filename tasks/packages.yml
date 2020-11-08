@@ -10,5 +10,7 @@
       - python3-docker
       - python3-passlib
       - python-passlib
+      - python-docker
+      - python-netaddr
     state: present
     update_cache: yes
