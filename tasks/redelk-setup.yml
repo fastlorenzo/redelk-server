@@ -99,3 +99,10 @@
     files: "redelk-{{ redelk_install_type }}.yml"
     build: no
   register: output
+
+# redelk-logstash.pkcs8.key should be the latest cert to be generated from by the docker container
+- name: Wait until RedELK certificates are generated
+  wait_for:
+    path: "{{ optsec_dir }}/{{ redelk_user }}/mounts/certs/redelk-logstash/redelk-logstash.pkcs8.key"
+    state: present
+  notify: fetch redelk certificates

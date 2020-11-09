@@ -16,7 +16,7 @@
 - name: fetch redelk certificates
   become: yes
   synchronize:
-    src: /opt/certs/
+    src: "{{ optsec_dir }}/{{ redelk_user }}/mounts/certs/"
     dest: "{{ redelk_cert_path }}/"
     mode: pull
     use_ssh_args: yes
