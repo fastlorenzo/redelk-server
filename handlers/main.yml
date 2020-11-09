@@ -12,6 +12,17 @@
   tags:
     - ssh
     - service
+    
+- name: restart docker service
+  become: yes
+  systemd:
+    name: docker
+    state: restarted
+    enabled: yes
+    daemon_reload: yes
+  tags:
+    - docker
+    - service
 
 - name: update-ca-certificates
   become: yes

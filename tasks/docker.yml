@@ -1,0 +1,46 @@
+---
+- name: Installing docker (apt)
+  become: yes
+  apt:
+    name:
+      - docker.io
+    state: present
+    update_cache: yes
+
+- name: Adding docker daemon.json
+  template:
+    src: daemon.json.j2
+    dest: /etc/docker/daemon.json
+    owner: root
+    group: root
+    mode: 0640
+  notify: restart docker service
+
+- name: Force restart docker if needed
+  meta: flush_handlers
+
+- name: Creating new docker directory
+  become: yes
+  file:
+    path: "{{ docker_dir }}"
+    owner: root
+    group: root
+    state: directory
+    mode: 0750
+  register: dockerdir
+
+- name: Removing old docker directory
+  become: yes
+  file:
+    path: "{{ docker_dir }}"
+    state: absent
+  when: dockerdir.changed && docker_dir != '/var/lib/docker'
+
+- name: Symlink /var/lib/docker to new docker directory
+  file:
+    src: "{{ docker_dir }}"
+    dest: /var/lib/docker
+    owner: root
+    group: root
+    state: link
+  when: docker_dir != '/var/lib/docker'

@@ -19,6 +19,8 @@ es_kibana_encryptionKey: "sLOVUK5MLv0VDhKsMlQcjgAaSMLXLLVy"
 neo4j_password: "BloodHound"
 # optsec_dir | Base directory for components install (where customer data will be stored) - allows to store on an encrypted partition/disk
 optsec_dir: "/opt"
+# docker_dir | Docker directory
+docker_dir: "/var/lib/docker"
 # redelk_user | RedELK SSH username (used to sync data between RedELK monitoring server and the clients)
 redelk_user: "redelk"
 # ssh_keys_path | Local path to store ssh keys

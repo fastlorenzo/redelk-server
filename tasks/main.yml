@@ -17,6 +17,11 @@
   tags:
     - packages
 
+# Apply docker fixes
+- import_tasks: docker.yml
+  tags:
+    - docker
+
 # Setup RedELK
 - import_tasks: redelk-setup.yml
   tags:
