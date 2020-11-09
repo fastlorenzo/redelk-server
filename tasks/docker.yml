@@ -27,7 +27,6 @@
     group: root
     state: directory
     mode: 0750
-  register: dockerdir
   notify: remove old docker directory
 
 - name: Force create new docker directory
