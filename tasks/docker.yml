@@ -28,19 +28,7 @@
     state: directory
     mode: 0750
   register: dockerdir
+  notify: remove old docker directory
 
-- name: Removing old docker directory
-  become: yes
-  file:
-    path: "{{ docker_dir }}"
-    state: absent
-  when: dockerdir.changed && docker_dir != '/var/lib/docker'
-
-- name: Symlink /var/lib/docker to new docker directory
-  file:
-    src: "{{ docker_dir }}"
-    dest: /var/lib/docker
-    owner: root
-    group: root
-    state: link
-  when: docker_dir != '/var/lib/docker'
+- name: Force create new docker directory
+  meta: flush_handlers

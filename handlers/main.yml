@@ -12,7 +12,7 @@
   tags:
     - ssh
     - service
-    
+
 - name: restart docker service
   become: yes
   systemd:
@@ -23,6 +23,23 @@
   tags:
     - docker
     - service
+
+- name: remove old docker directory
+  become: yes
+  file:
+    path: "/var/lib/docker"
+    state: absent
+  when: docker_dir != '/var/lib/docker'
+  notify: symlink new docker directory
+
+- name: symlink new docker directory
+  file:
+    src: "{{ docker_dir }}"
+    dest: /var/lib/docker
+    owner: root
+    group: root
+    state: link
+  when: docker_dir != '/var/lib/docker'
 
 - name: update-ca-certificates
   become: yes
