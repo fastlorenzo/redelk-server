@@ -106,3 +106,6 @@
     path: "{{ optsec_dir }}/{{ redelk_user }}/mounts/certs/redelk-logstash/redelk-logstash.pkcs8.key"
     state: present
   notify: fetch redelk certificates
+
+- name: Force all notified handlers to run at this point, not waiting for normal sync points
+  meta: flush_handlers
