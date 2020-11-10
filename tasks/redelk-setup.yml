@@ -51,14 +51,27 @@
   become: yes
   template:
     src: nginx-config/default.conf.j2
-    dest: "{{ optsec_dir }}/{{ redelk_user }}/mounts/nginx-config/default.conf"
-
-- name: Create Nginx htpasswd file
+    dest: "{{ optsec_dir }}/{{ redelk_user }}/mounts/nginx-config/default.conf.template"
+- name: Copying ssl-dhparams.pem config file from RedELK repository
+  become: yes
+  copy:
+    src: "{{ redelk_repo_path }}/elkserver/mounts/nginx-config/ssl-dhparams.pem.template"
+    dest: "{{ optsec_dir }}/{{ redelk_user }}/mounts/nginx-config/ssl-dhparams.pem.template"
+- name: Create Nginx htpasswd file ({{ es_redelk_user }})
   become: yes
   htpasswd:
-    path: "{{ optsec_dir }}/{{ redelk_user }}/mounts/nginx-config/htpasswd.users"
+    path: "{{ optsec_dir }}/{{ redelk_user }}/mounts/nginx-config/htpasswd.users.template"
     name: "{{ es_redelk_user }}"
     password: "{{ es_redelk_password }}"
+    owner: 0
+    group: 101
+    mode: 0640
+- name: Create Nginx htpasswd file (elastic)
+  become: yes
+  htpasswd:
+    path: "{{ optsec_dir }}/{{ redelk_user }}/mounts/nginx-config/htpasswd.users.template"
+    name: elastic
+    password: "{{ es_elastic_password }}"
     owner: 0
     group: 101
     mode: 0640
@@ -91,6 +104,20 @@
     src: docker-env.j2
     dest: "{{ optsec_dir }}/{{ redelk_user }}/.env"
     mode: 0640
+
+# init-letsencrypt.sh
+- name: Copying init-letsencrypt.sh from RedELK repository
+  become: yes
+  copy:
+    src: "{{ redelk_repo_path }}/elkserver/init-letsencrypt.sh"
+    dest: "{{ optsec_dir }}/{{ redelk_user }}/init-letsencrypt.sh"
+    mode: 0755
+    owner: "{{ redelk_user }}"
+    group: root
+  notify: run init-letsencrypt.sh
+
+- name: Force run init-letsencrypt.sh if needed
+  meta: flush_handlers
 
 - name: Run `docker-compose up` again
   become: yes

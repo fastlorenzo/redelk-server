@@ -6,6 +6,7 @@
       - docker-compose
       - unzip
       - apt-transport-https
+      - jq
     state: present
     update_cache: yes
 
