@@ -121,7 +121,7 @@
 
 - name: Run `docker-compose up` again
   become: yes
-  community.general.docker_compose:
+  docker_compose:
     project_src: "{{ optsec_dir }}/{{ redelk_user }}"
     files: "redelk-{{ redelk_install_type }}.yml"
     build: no
