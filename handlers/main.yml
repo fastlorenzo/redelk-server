@@ -46,7 +46,7 @@
   command: "update-ca-certificates"
 
 - name: run init-letsencrypt.sh
-  command: "{{ optsec_dir }}/{{ redelk_user }}/init-letsencrypt.sh"
+  command: "{{ optsec_dir }}/{{ redelk_user }}/init-letsencrypt.sh redelk-{{ redelk_install_type }}.yml {{ external_domain }}"
   args:
     chdir: "{{ optsec_dir }}/{{ redelk_user }}/"
   ignore_errors: yes
