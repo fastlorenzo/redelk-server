@@ -2,7 +2,7 @@
     "DEBUG": "0",
     "LOGLEVEL": "20",
     "redelkserver_letsencrypt": {
-        "enable_letsencrypt": {{ le_enable }},
+        "enable_letsencrypt": {{ le_enable | bool | to_json }},
         "external_domain": "{{ external_domain }}",
         "le_email": "{{ le_email }}"
     },

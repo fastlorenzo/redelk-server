@@ -42,9 +42,9 @@ certs_dir_nginx_ca: "/etc/nginx/ca_certs"
 # certs_dir_nginx_ca_local | Local path to folder containing the CA certificate
 certs_dir_nginx_ca_local: "./mounts/certs/ca"
 # tls_nginx_crt_path | Path to the certificate file in Nginx container
-tls_nginx_crt_path: "/etc/nginx/certs/fullchain.pem"
+tls_nginx_crt_path: "/etc/letsencrypt/live/{{ external_domain }}/fullchain.pem"
 # tls_nginx_key_path | Path to the private key file in Nginx container
-tls_nginx_key_path: "/etc/nginx/certs/privkey.pem"
+tls_nginx_key_path: "/etc/letsencrypt/live/{{ external_domain }}/privkey.pem"
 # tls_nginx_ca_path | Path to the CA file in Nginx container
 tls_nginx_ca_path: "/etc/nginx/ca_certs/ca.crt"
 # redelk_repo_path | Local path to the RedELK git repository. will be cloned if doesn't exist
