@@ -56,7 +56,8 @@ redelk_version: "master"
 # redelk_install_type | (`full` or `limited`) If `full`, Jupyter notebooks and BloodHound/Neo4J will be installed as well
 redelk_install_type: "full"
 # RedELK config
-redelk_alarm_Verbosity: "0"
+# redelk_loglevel | Log level of the RedELK daemon. Default `WARNING`
+redelk_loglevel: "WARNING"
 redelk_alarm_interval: "3600"
 redelk_alarm_tempDir: "/tmp"
 # customer_ips | List of customer's IP addresses
@@ -75,15 +76,20 @@ monitor_hosts: false
 redelk_alarms:
   alarm_dummy:
     enabled: false
+    interval: 300
   alarm_filehash:
     enabled: true
     vt_api_key: "<<INSERT_API_KEY>>"
     ibm_basic_auth: "Basic <<REPLACE>>"
     ha_api_key: "<<INSERT_API_KEY>>"
+    interval: 360
   alarm_httptraffic:
     enabled: true
+    interval: 310
+    notify_interval: 86400  # Only notify on the same IP hit every 24h by default
   alarm_useragent:
     enabled: true
+    interval: 320
 # redelk_notifications | Alarm notifications dict (cf. config.json in RedELK repo for possible options)
 redelk_notifications:
   email:
@@ -93,7 +99,7 @@ redelk_notifications:
       port: "587"
       login: "redelk@bernardi.be"
       pass: "<<SMTP_PASS>>"
-    from": "redelk@bernardi.be"
+    from: "redelk@bernardi.be"
     to:
       - "redelk@bernardi.be"
   msteams:
@@ -109,12 +115,15 @@ redelk_enrich:
     interval: 300
   enrich_greynoise:
     enabled: true
-    interval": 310
+    interval: 310
     cache: 86400
   enrich_tor:
     enabled: true
     interval: 360
     cache: 360
+  enrich_iplists:
+    enabled: true
+    interval: 330
   enrich_synciplists:
     enabled: true
     interval: 360

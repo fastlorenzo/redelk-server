@@ -14,6 +14,9 @@ REDELKREPO={{ redelk_repo }}
 # Docker generic variables
 COMPOSE_PROJECT_NAME=redelk
 
+# Defines the maximum log size per container (https://docs.docker.com/compose/compose-file/compose-file-v3/#logging)
+LOG_MAX_SIZE=200m
+LOG_MAX_FILE=4
 
 # Variables for ES, Logstash and Kibana
 CERTS_DIR_ES=/usr/share/elasticsearch/config/certificates

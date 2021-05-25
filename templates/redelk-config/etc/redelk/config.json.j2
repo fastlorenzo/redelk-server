@@ -1,12 +1,11 @@
 {
-    "DEBUG": "0",
-    "LOGLEVEL": "20",
+    "loglevel": "{{ redelk_loglevel }}",
     "redelkserver_letsencrypt": {
         "enable_letsencrypt": {{ le_enable | bool | to_json }},
         "external_domain": "{{ external_domain }}",
-        "le_email": "{{ le_email }}"
+        "le_email": "{{ le_email }}",
+        "staging": "0"
     },
-    "Verbosity": "{{ redelk_alarm_Verbosity }}",
     "interval": {{ redelk_alarm_interval }},
     "tempDir": "{{ redelk_alarm_tempDir }}",
     "es_connection": [
