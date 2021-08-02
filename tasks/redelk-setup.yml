@@ -38,13 +38,21 @@
     - "{{ redelk_repo_path }}/elkserver/mounts/jupyter-workbooks/*"
 
 # logstash
+# - name: Copying logstash config files from RedELK repository
+#   become: yes
+#   copy:
+#     src: "{{ item }}"
+#     dest: "{{ optsec_dir }}/{{ redelk_user }}/mounts/logstash-config/{{ item | basename }}"
+#   with_fileglob:
+#     - "{{ redelk_repo_path }}/elkserver/docker/redelk-logstash/redelkinstalldata/redelk-main/conf.d/*"
 - name: Copying logstash config files from RedELK repository
   become: yes
-  copy:
-    src: "{{ item }}"
-    dest: "{{ optsec_dir }}/{{ redelk_user }}/mounts/logstash-config/{{ item | basename }}"
-  with_fileglob:
-    - "{{ redelk_repo_path }}/elkserver/docker/redelk-logstash/redelkinstalldata/redelk-main/conf.d/*"
+  synchronize:
+    src: "{{ redelk_repo_path }}/elkserver/docker/redelk-logstash/redelkinstalldata/"
+    dest: "{{ optsec_dir }}/{{ redelk_user }}/mounts/logstash-config/"
+    mode: push
+    use_ssh_args: yes
+  when: monitor_hosts
 
 # nginx
 - name: Copying nginx config file
@@ -104,6 +112,21 @@
     src: docker-env.j2
     dest: "{{ optsec_dir }}/{{ redelk_user }}/.env"
     mode: 0640
+
+# When monitor_hosts == true
+- name: Update docker-compose to monitor hosts (mount pipelines.yml)
+  replace:
+    path: "{{ optsec_dir }}/{{ redelk_user }}/redelk-{{ redelk_install_type }}.yml"
+    regexp: '\#- \.\/mounts\/logstash-config\/config\/pipelines\.yml\:\/usr\/share\/logstash\/config\/pipelines\.yml'
+    replace: '- {{ optsec_dir }}/{{ redelk_user }}/mounts/logstash-config/config/pipelines.yml:/usr/share/logstash/config/pipelines.yml'
+  when: monitor_hosts
+
+- name: Update docker-compose to monitor hosts (mount conf.d)
+  replace:
+    path: "{{ optsec_dir }}/{{ redelk_user }}/redelk-{{ redelk_install_type }}.yml"
+    regexp: '\#- \.\/mounts\/logstash-config\/redelk-main\:\/usr\/share\/logstash\/redelk-main'
+    replace: '- {{ optsec_dir }}/{{ redelk_user }}/mounts/logstash-config/redelk-main:/usr/share/logstash/redelk-main'
+  when: monitor_hosts
 
 # init-letsencrypt.sh
 - name: Copying init-letsencrypt.sh from RedELK repository

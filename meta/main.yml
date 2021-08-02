@@ -1,9 +1,9 @@
 galaxy_info:
   author: Lorenzo Bernardi
   description: Role to deploy RedELK server components
-  version: 0.1.2
+  company: Lorenzo Bernardi
   license: BSD-3-Clause
-  min_ansible_version: 2.9
+  min_ansible_version: "2.9"
   platforms:
   - name: Ubuntu
     versions:
