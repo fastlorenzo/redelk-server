@@ -52,22 +52,22 @@
   file:
     path: "{{ optsec_dir }}/{{ redelk_user }}/mounts/redelk-ssh"
     state: directory
-    owner: "{{ redelk_user }}"
-    group: "{{ redelk_user }}"
+    owner: "1000"
+    group: "1000"
     mode: 0755
 - name: Copying ssh private key to docker env
   become: yes
   copy:
     src: "{{ ssh_keys_path }}/{{ redelk_user }}_id_rsa"
     dest: "{{ optsec_dir }}/{{ redelk_user }}/mounts/redelk-ssh/id_rsa"
-    owner: "{{ redelk_user }}"
-    group: "{{ redelk_user }}"
+    owner: "1000"
+    group: "1000"
     mode: 0600
 - name: Copying ssh public key to docker env
   become: yes
   copy:
     src: "{{ ssh_keys_path }}/{{ redelk_user }}_id_rsa.pub"
     dest: "{{ optsec_dir }}/{{ redelk_user }}/mounts/redelk-ssh/id_rsa.pub"
-    owner: "{{ redelk_user }}"
-    group: "{{ redelk_user }}"
+    owner: "1000"
+    group: "1000"
     mode: 0600
