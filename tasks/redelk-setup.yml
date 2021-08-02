@@ -53,6 +53,12 @@
     mode: push
     use_ssh_args: yes
   when: monitor_hosts
+- name: Copying Logstash beats output config
+  become: yes
+  copy:
+    src: "98-outputs-beats_logstash.conf"
+    dest: "{{ optsec_dir }}/{{ redelk_user }}/mounts/logstash-config/redelk-main/conf.d/98-outputs-beats_logstash.conf"
+  when: monitor_hosts
 
 # nginx
 - name: Copying nginx config file
