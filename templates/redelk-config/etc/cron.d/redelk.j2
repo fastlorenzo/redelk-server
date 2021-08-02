@@ -13,8 +13,8 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 # m h dom mon dow user  command
 #*/2 * * * * redelk /usr/share/redelk/bin/getremotelogs.sh $IP $HOSTNAME scponly
 #
-{% for host in hostvars.values()|list|json_query("[?type=='c2'].hostname") %}
-*/2 * * * * redelk /usr/share/redelk/bin/getremotelogs.sh {{ hostvars[host].ip }} {{ host }} {{ redelk_user }}
+{% for host in hostvars.values()|list|json_query("[?type=='c2'].inventory_hostname") %}
+*/2 * * * * redelk /usr/share/redelk/bin/getremotelogs.sh {{ hostvars[host].ansible_host }} {{ host }} {{ redelk_user }} {{ optsec_dir }}/{{ redelk_user }}/
 {% endfor %}
 
 # Run update script for TOR exit nodes twice a day
