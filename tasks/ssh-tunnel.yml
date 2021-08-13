@@ -23,6 +23,8 @@
   with_items:
     - "{{ hostvars.values()|list|json_query(\"[?type=='redirector'].ansible_hostname\") }}"
     - "{{ hostvars.values()|list|json_query(\"[?type=='c2'].ansible_hostname\") }}"
+    - "{{ hostvars.values()|list|json_query(\"[?type=='phishing'].ansible_hostname\") }}"
+    - "{{ hostvars.values()|list|json_query(\"[?type=='vpn'].ansible_hostname\") }}"
   notify: restart autossh services
   tags:
     - ssh
