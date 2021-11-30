@@ -93,7 +93,7 @@ redelk_alarms:
 # redelk_notifications | Alarm notifications dict (cf. config.json in RedELK repo for possible options)
 redelk_notifications:
   email:
-    enabled: true
+    enabled: false
     smtp:
       host: "mail.bernardi.be"
       port: "587"
@@ -103,7 +103,7 @@ redelk_notifications:
     to:
       - "redelk@bernardi.be"
   msteams:
-    enabled: true
+    enabled: false
     webhook_url: ""
   slack:
     enabled: false

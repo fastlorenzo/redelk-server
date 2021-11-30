@@ -66,11 +66,15 @@
   template:
     src: nginx-config/default.conf.j2
     dest: "{{ optsec_dir }}/{{ redelk_user }}/mounts/nginx-config/default.conf.template"
+  tags:
+    - nginx
 - name: Copying ssl-dhparams.pem config file from RedELK repository
   become: yes
   copy:
     src: "{{ redelk_repo_path }}/elkserver/mounts/nginx-config/ssl-dhparams.pem.template"
     dest: "{{ optsec_dir }}/{{ redelk_user }}/mounts/nginx-config/ssl-dhparams.pem.template"
+  tags:
+    - nginx
 - name: Create Nginx htpasswd file ({{ es_redelk_user }})
   become: yes
   htpasswd:
@@ -80,6 +84,8 @@
     owner: 0
     group: 101
     mode: 0640
+  tags:
+    - nginx
 - name: Create Nginx htpasswd file (elastic)
   become: yes
   htpasswd:
@@ -89,6 +95,8 @@
     owner: 0
     group: 101
     mode: 0640
+  tags:
+    - nginx
 
 # cron
 - name: Copying RedELK cron file
@@ -96,6 +104,8 @@
   template:
     src: redelk-config/etc/cron.d/redelk.j2
     dest: "{{ optsec_dir }}/{{ redelk_user }}/mounts/redelk-config/etc/cron.d/redelk"
+  tags:
+    - cron
 
 # RedELK config files
 - name: Copying RedELK config files
@@ -112,12 +122,16 @@
   copy:
     src: "{{ redelk_repo_path }}/elkserver/redelk-{{ redelk_install_type }}.yml"
     dest: "{{ optsec_dir }}/{{ redelk_user }}/redelk-{{ redelk_install_type }}.yml"
+  tags:
+    - docker
 - name: Generating docker-compose .env file
   become: yes
   template:
     src: docker-env.j2
     dest: "{{ optsec_dir }}/{{ redelk_user }}/.env"
     mode: 0640
+  tags:
+    - docker
 
 # When monitor_hosts == true
 - name: Update docker-compose to monitor hosts (mount pipelines.yml)
@@ -126,6 +140,8 @@
     regexp: '\#- \.\/mounts\/logstash-config\/config\/pipelines\.yml\:\/usr\/share\/logstash\/config\/pipelines\.yml'
     replace: '- {{ optsec_dir }}/{{ redelk_user }}/mounts/logstash-config/config/pipelines.yml:/usr/share/logstash/config/pipelines.yml'
   when: monitor_hosts
+  tags:
+    - docker
 
 - name: Update docker-compose to monitor hosts (mount conf.d)
   replace:
@@ -133,6 +149,8 @@
     regexp: '\#- \.\/mounts\/logstash-config\/redelk-main\:\/usr\/share\/logstash\/redelk-main'
     replace: '- {{ optsec_dir }}/{{ redelk_user }}/mounts/logstash-config/redelk-main:/usr/share/logstash/redelk-main'
   when: monitor_hosts
+  tags:
+    - docker
 
 # init-letsencrypt.sh
 - name: Copying init-letsencrypt.sh from RedELK repository
@@ -144,9 +162,15 @@
     owner: "{{ redelk_user }}"
     group: root
   notify: run init-letsencrypt.sh
+  tags:
+    - pki
+    - docker
 
 - name: Force run init-letsencrypt.sh if needed
   meta: flush_handlers
+  tags:
+    - pki
+    - docker
 
 - name: Run `docker-compose up` again
   become: yes
@@ -155,12 +179,17 @@
     files: "redelk-{{ redelk_install_type }}.yml"
     build: no
   register: output
+  tags:
+    - pki
+    - docker
 
 # redelk-logstash.pkcs8.key should be the latest cert to be generated from by the docker container
 - name: Wait until RedELK certificates are generated
   wait_for:
     path: "{{ optsec_dir }}/{{ redelk_user }}/mounts/certs/redelk-logstash/redelk-logstash.pkcs8.key"
     state: present
+  tags:
+    - pki
 
 - name: Fetch redelk certificates
   become: yes
@@ -169,3 +198,5 @@
     dest: "{{ redelk_cert_path }}/"
     mode: pull
     use_ssh_args: yes
+  tags:
+    - pki

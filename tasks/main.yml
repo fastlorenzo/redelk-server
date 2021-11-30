@@ -6,6 +6,7 @@
   tags:
     - elasticsearch
     - memory
+    - redelk-setup
 
 # Setup needed users and SSH access
 - import_tasks: ssh.yml

@@ -23,6 +23,7 @@
   tags:
     - docker
     - service
+    - redelk-setup
 
 - name: remove old docker directory
   become: yes
@@ -31,6 +32,9 @@
     state: absent
   when: docker_dir != '/var/lib/docker'
   notify: symlink new docker directory
+  tags:
+    - docker
+    - redelk-setup
 
 - name: symlink new docker directory
   file:
@@ -40,13 +44,22 @@
     group: root
     state: link
   when: docker_dir != '/var/lib/docker'
+  tags:
+    - docker
+    - redelk-setup
 
 - name: update-ca-certificates
   become: yes
   command: "update-ca-certificates"
+  tags:
+    - pki
+    - redelk-setup
 
 - name: run init-letsencrypt.sh
   command: "{{ optsec_dir }}/{{ redelk_user }}/init-letsencrypt.sh redelk-{{ redelk_install_type }}.yml {{ external_domain }}"
   args:
     chdir: "{{ optsec_dir }}/{{ redelk_user }}/"
   ignore_errors: yes
+  tags:
+    - pki
+    - redelk-setup
