@@ -48,11 +48,10 @@
 - name: Copying logstash config files from RedELK repository
   become: yes
   synchronize:
-    src: "{{ redelk_repo_path }}/elkserver/docker/redelk-logstash/redelkinstalldata/"
+    src: "{{ redelk_repo_path }}/elkserver/mounts/logstash-config/"
     dest: "{{ optsec_dir }}/{{ redelk_user }}/mounts/logstash-config/"
     mode: push
     use_ssh_args: yes
-  when: monitor_hosts
 - name: Copying Logstash beats output config
   become: yes
   copy:
