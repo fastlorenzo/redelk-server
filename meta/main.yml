@@ -13,4 +13,5 @@ galaxy_info:
     - redelk
     - security
     - redteam
-dependencies: []
+dependencies:
+  - community.crypto

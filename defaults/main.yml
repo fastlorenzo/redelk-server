@@ -1,6 +1,6 @@
 ---
 # es_version | Elastic version
-es_version: "7.10.0"
+es_version: "7.16.3"
 # es_elastic_password | ElasticSearch users
 es_elastic_password: elastic
 # es_logstash_system_password | ElasticSearch `logstash_system` user's password

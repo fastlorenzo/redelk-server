@@ -12,7 +12,7 @@ The following variables can be modified:
 
 | Variable | Description | Default value |
 |----------|-------------|---------------|
-| `es_version` | Elastic version | `7.10.0` |
+| `es_version` | Elastic version | `7.16.3` |
 | `es_elastic_password` | ElasticSearch users | `elastic` |
 | `es_logstash_system_password` | ElasticSearch `logstash_system` user's password | `logstash_system` |
 | `es_kibana_password` | ElasticSearch `kibana` user's password | `kibana` |
@@ -69,7 +69,7 @@ Local path to folder containing the CA certificate | `./mounts/certs/ca` |
 | `    interval` |  | `320` |
 | `redelk_notifications` | Alarm notifications dict (cf. config.json in RedELK repo for possible options) | `` |
 | `  email` |  | `` |
-| `    enabled` |  | `true` |
+| `    enabled` |  | `false` |
 | `    smtp` |  | `` |
 | `      host` |  | `mail.bernardi.be` |
 | `      port` |  | `587` |
@@ -79,7 +79,7 @@ Local path to folder containing the CA certificate | `./mounts/certs/ca` |
 | `    to` |  | `` |
 | `      - "redelk@bernardi.be"` |  | `- "redelk@bernardi.be` |
 | `  msteams` |  | `` |
-| `    enabled` |  | `true` |
+| `    enabled` |  | `false` |
 | `    webhook_url` |  | `` |
 | `  slack` |  | `` |
 | `    enabled` |  | `false` |
