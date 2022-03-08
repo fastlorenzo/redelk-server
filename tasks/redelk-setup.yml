@@ -190,6 +190,16 @@
   tags:
     - pki
 
+- name: Ensure local certificates directory exists
+  become: yes
+  file:
+    path: "{{ redelk_cert_path }}"
+    state: directory
+    mode: 0750
+    owner: root
+    group: root
+  delegate_to: localhost
+
 - name: Fetch redelk certificates
   become: yes
   synchronize:
