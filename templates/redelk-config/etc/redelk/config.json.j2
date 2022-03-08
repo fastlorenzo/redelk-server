@@ -4,7 +4,7 @@
         "enable_letsencrypt": {{ le_enable | bool | to_json }},
         "external_domain": "{{ external_domain }}",
         "le_email": "{{ le_email }}",
-        "staging": "0"
+        "staging": "{{ le_staging }}"
     },
     "interval": {{ redelk_alarm_interval }},
     "tempDir": "{{ redelk_alarm_tempDir }}",
